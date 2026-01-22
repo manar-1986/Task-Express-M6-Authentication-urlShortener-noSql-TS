@@ -1,11 +1,14 @@
-import express from 'express';
+import express from "express";
+import { shorten, deleteUrl, redirect } from "./urls.controllers";
+import { authorize } from "../../middleware/auth.middleware";
 
 const router = express.Router();
 
-import { shorten, redirect, deleteUrl } from './urls.controllers';
+// Public route - anyone can access shortened URLs
+router.get("/:shortCode", redirect);
 
-router.post('/shorten/:userId', shorten);
-router.get('/:code', redirect);
-router.delete('/:code', deleteUrl);
+// Protected routes - require authentication
+router.post("/shorten", authorize, shorten);
+router.delete("/:code", authorize, deleteUrl);
 
 export default router;
