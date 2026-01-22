@@ -33,14 +33,10 @@ export const authorize = (
             return res.status(401).json({ message: 'Invalid auth format' });
         }
     
-        if (!process.env.JWT_SECRET) {
-            return res.status(500).json({ error: "JWT_SECRET not configured" });
-        }
-
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string; username: string };
         
-        // Attach user to request (include id as alias for userId)
+        // Attach user to request
         req.user = {
             id: decoded.userId,
             userId: decoded.userId,

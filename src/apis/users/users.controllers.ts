@@ -49,19 +49,19 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
             return res.status(400).json({ error: "Username and password are required" });
         }
 
-        // Check if the user exists
+        // Check if the user does not exist. If they don't exist, they need to register
         const user = await User.findOne({ username });
         if (!user) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        // Compare the submitted password against the stored hash password
+        // Compare the submitted password from req.body against the stored hash password using bcrypt.compare
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(401).json({ error: "Invalid credentials" });
         }
 
-        // Generate JWT token
+        // If the passwords match, generate a token
         const token = jwt.sign(
             { 
                 userId: user._id,
@@ -71,7 +71,7 @@ export const signin = async (req: Request, res: Response, next: NextFunction) =>
             { expiresIn: "7d" }
         );
 
-        // Return the token and user information
+        // Return the token in the response
         res.status(200).json({
             token,
             user: {

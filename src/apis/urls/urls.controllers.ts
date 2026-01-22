@@ -11,7 +11,7 @@ export const shorten = async (
     res: Response,
     next: NextFunction
 ) => {
-    const userId = req.user?.id; // Get from authenticated user
+    const userId = req.user.id; // Get from authenticated user
     // create url code
     const urlCode = shortid.generate();
     try {
@@ -47,7 +47,7 @@ export const deleteUrl = async (
     next: NextFunction
 ) => {
     try {
-        const userId = new mongoose.Types.ObjectId(req.user?.id);
+        const userId = new mongoose.Types.ObjectId(req.user.id);
         const url = await Url.findOne({ urlCode: req.params.code });
         if (userId.equals(url?.userId)) {
             await Url.findByIdAndDelete(url._id);
